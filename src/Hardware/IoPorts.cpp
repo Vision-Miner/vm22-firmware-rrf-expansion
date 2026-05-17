@@ -15,7 +15,7 @@
 # include <Hardware/ATEIO/ExtendedAnalog.h>
 #endif
 
-#ifdef TOOL1LC
+#if defined(TOOL1LC) || defined(EXP3HC)
 # include <Platform/Platform.h>
 #endif
 
@@ -476,6 +476,10 @@ void IoPort::AppendPinName(const StringRef& str, bool includeBoardAddress) const
 #ifdef TOOL1LC
 		// Pin io3.in aka PA1 is not available in board version 1.0 and earlier
 		if (Platform::GetBoardVariant() == 0 && lp == PortAPin(1)) { continue; }
+#endif
+#ifdef EXP3HC
+		// Pin uart0.rx aka PA17 is not IO0_in on board version 1.03 and later
+		if (Platform::GetBoardVariant() >= 2 && lp == PortAPin(17)) { continue; }
 #endif
 		const char *q = PinTable[lp].pinNames;
 		while (*q != 0)
