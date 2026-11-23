@@ -35,18 +35,18 @@ PROJECT="Duet3Expansion"
 # repo, so `git clean` and `git status` never see it.
 #   1. $EXPANSION_WS wins, for CI and for unusual layouts.
 #   2. The canonical layout <ws>/repos/<this repo> is recognised.
-#   3. Otherwise a sibling directory next to the repo.
+#   3. Otherwise the RepRapFirmware fork's workspace next to the repo.
 #
-# The layout is the RepRapFirmware fork's, and the toolchain and library pins
-# are the same, so pointing EXPANSION_WS at that fork's workspace reuses what is
-# already there. The two projects have different names and coexist in one
+# The RepRapFirmware fork pins the same compiler and the same library commits,
+# so by default both boards are built from one workspace and with one copy of
+# the pinned compiler. The two projects have different names and coexist in one
 # Eclipse workspace.
 if [ -n "${EXPANSION_WS:-}" ]; then
 	WS="$EXPANSION_WS"
 elif [ "$(basename "$(dirname "$REPO_ROOT")")" = "repos" ]; then
 	WS="$(dirname "$(dirname "$REPO_ROOT")")"
 else
-	WS="$(dirname "$REPO_ROOT")/vm-expansion-workspace"
+	WS="$(dirname "$REPO_ROOT")/vm-rrf-workspace"
 fi
 
 DEPS_DIR="${WS}/repos"
@@ -63,8 +63,8 @@ for conf in repos.conf targets.conf; do
 done
 
 VERSION_HEADER="${REPO_ROOT}/src/Version.h"
-# Qualified, because a RepRapFirmware workspace shared through EXPANSION_WS
-# already has a last-build.log.
+# Qualified, because the shared workspace already holds the RepRapFirmware
+# fork's last-build.log.
 BUILD_LOG="${WS}/last-expansion-build.log"
 
 # --- Host --------------------------------------------------------------------

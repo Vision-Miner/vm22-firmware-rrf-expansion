@@ -65,6 +65,9 @@ publishes has not been verified; compare checksums before relying on it.
 
 ## Setting up
 
+Clone the repository into the directory that holds the RepRapFirmware fork, so
+that both find the same workspace (see below):
+
 ```sh
 git clone -b visionminer-3.5 https://github.com/Vision-Miner/vm22-firmware-rrf-expansion.git
 cd vm22-firmware-rrf-expansion
@@ -75,7 +78,9 @@ cd vm22-firmware-rrf-expansion
 
 `bootstrap` downloads ARM GCC 12.2.1, clones the four Duet3D library
 repositories at their pinned commits, and installs CrcAppender. It needs roughly
-1.5 GB of disk and is run once per machine.
+1.5 GB of disk and is run once per machine; in a workspace the RepRapFirmware
+fork has already bootstrapped it finds everything in place and downloads
+nothing.
 
 ### Where files are placed
 
@@ -91,19 +96,20 @@ placed in a workspace directory beside it:
 
 The workspace is the value of `$EXPANSION_WS` when set; otherwise, when the
 repository is located at `<ws>/repos/<name>`, that `<ws>`; otherwise
-`vm-expansion-workspace/` next to the repository. `build.sh doctor` prints the
-resolved paths.
+`vm-rrf-workspace/` next to the repository — the default workspace of the
+RepRapFirmware fork. `build.sh doctor` prints the resolved paths.
 
 The workspace is kept outside the repository because Eclipse imports each
 library as a separate project, and it does not support projects located inside
 another project's directory, nor a workspace located inside an imported project.
 
 The RepRapFirmware fork pins the same compiler and the same library commits, so
-its workspace can be reused by pointing `EXPANSION_WS` at it. The two Eclipse
-projects have different names and live in one Eclipse workspace side by side;
-each build writes its own log. Keep in mind that the libraries are then shared:
-`bootstrap --sync` and `clean --deps` act on both builds, and a pin changed in
-one repository puts the other one off its pins.
+by default the main-board and the expansion-board firmware are built in one
+workspace, by one copy of the pinned compiler. The two Eclipse projects have
+different names and live in one Eclipse workspace side by side; each build
+writes its own log. The libraries are shared as well: `bootstrap --sync` and
+`clean --deps` act on both builds, and a pin changed in one repository puts the
+other one off its pins. Set `EXPANSION_WS` to keep the two apart.
 
 ## Building
 
