@@ -20,6 +20,7 @@ env:
   # Everything that is not the firmware itself — toolchain, libraries, Eclipse
   # metadata — lives here, beside the checkout.
   EXPANSION_WS: ${{ github.workspace }}/ws
+  RELEASE_TARGET: EXP3HC
 
 jobs:
   release:
@@ -74,17 +75,17 @@ jobs:
       # the compilation date to the date of the commit.
       - name: Build
         working-directory: ws/repos/Duet3Expansion
-        run: xvfb-run -a ./Tools/vm-build/build.sh release-build
+        run: xvfb-run -a ./Tools/vm-build/build.sh release-build "$RELEASE_TARGET"
 
-      # The file list comes from targets.conf through build.sh, so this workflow
-      # holds no second copy of it.
+      # The file names come from targets.conf through build.sh, so this workflow
+      # holds no second copy of them.
       - name: Collect the artifacts
         working-directory: ws/repos/Duet3Expansion
         run: |
           mkdir -p "$RUNNER_TEMP/release" "$RUNNER_TEMP/symbols"
-          ./Tools/vm-build/build.sh artifacts        | xargs -r cp -t "$RUNNER_TEMP/release/"
-          ./Tools/vm-build/build.sh artifacts --maps | xargs -r cp -t "$RUNNER_TEMP/release/"
-          ./Tools/vm-build/build.sh artifacts --maps | xargs -r cp -t "$RUNNER_TEMP/symbols/"
+          ./Tools/vm-build/build.sh artifacts        "$RELEASE_TARGET" | xargs -r cp -t "$RUNNER_TEMP/release/"
+          ./Tools/vm-build/build.sh artifacts --maps "$RELEASE_TARGET" | xargs -r cp -t "$RUNNER_TEMP/release/"
+          ./Tools/vm-build/build.sh artifacts --maps "$RELEASE_TARGET" | xargs -r cp -t "$RUNNER_TEMP/symbols/"
           ls -l "$RUNNER_TEMP/release" "$RUNNER_TEMP/symbols"
 
       # The maps are attached to the release, where they are kept for as long as

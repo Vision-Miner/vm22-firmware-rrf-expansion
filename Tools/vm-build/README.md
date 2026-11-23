@@ -188,8 +188,10 @@ git push origin 3.5.4-vm.1
 ```
 
 Pushing the tag is what starts a release. The `Release` workflow checks the tag
-against `src/Version.h`, builds it, and opens a **draft** release with the
-firmware and its linker map attached. The description is GitHub's generated list
+against `src/Version.h`, builds `EXP3HC`, and opens a **draft** release with the
+firmware and its linker map attached. The debug targets are not part of a
+release; build them locally when a board is to be debugged over SWD. The
+description is GitHub's generated list
 of changes since the previous release; write the human part into the draft and
 publish it when it reads the way you want.
 
@@ -197,7 +199,7 @@ The same build can be reproduced locally at any time:
 
 ```sh
 git checkout 3.5.4-vm.1
-./Tools/vm-build/build.sh release-build
+./Tools/vm-build/build.sh release-build EXP3HC
 ```
 
 `release-build` stops before compiling if the working tree has uncommitted
